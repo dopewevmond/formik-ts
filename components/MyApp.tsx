@@ -7,21 +7,16 @@ interface FormValues {
   password: string;
 }
 
-interface OtherProps {
-  message: string;
-}
-
 function isValidEmail(email: string): boolean {
   return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
     email
   );
 }
 // Aside: You may see InjectedFormikProps<OtherProps, FormValues> instead of what comes below in older code.. InjectedFormikProps was artifact of when Formik only exported a HoC. It is also less flexible as it MUST wrap all props (it passes them through).
-const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
-  const { touched, errors, isSubmitting, message } = props;
+const InnerForm = (props: FormikProps<FormValues>) => {
+  const { touched, errors, isSubmitting } = props;
   return (
     <Form noValidate>
-      <h1>{message}</h1>
       <Field type="email" name="email" />
       {touched.email && errors.email && <div>{errors.email}</div>}
 
@@ -38,7 +33,6 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
 // The type of props MyForm receives
 interface MyFormProps {
   initialEmail?: string;
-  message: string; // if this passed all the way through you might do this or make a union type
 }
 
 // Wrap our form with the withFormik HoC
@@ -70,9 +64,7 @@ const MyForm = withFormik<MyFormProps, FormValues>({
 // Use <MyForm /> wherevs
 const Basic = () => (
   <div>
-    <h1>My App</h1>
-    <p>This can be anywhere in your application</p>
-    <MyForm message="Sign up" />
+    <MyForm />
   </div>
 );
 
